@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "urify"
+version = "0.1.0"
+description = "Dissect and filter URLs provided on stdin."
+authors = ["Harsh Verma <synacktra.work@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tldextract = "^5.0.1"
+pydantic = "^2.4.2"
+
+[tool.poetry.scripts]
+urify = "urify.__main__:cli.run"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

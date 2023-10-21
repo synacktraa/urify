@@ -1,0 +1,4 @@
+https://sub.example.com/literally%20me.jpg#top
+http://mom.spaghetti.com:8080/cookbook.pdf?search=query
+http://blog.example.org:8443/new%20blog?id=123
+http://shop.cartel.net:8443/cart.html?product-id=29&name=powder
