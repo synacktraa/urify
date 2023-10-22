@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "urify"
-version = "0.1.0"
+version = "0.1.1"
 description = "Dissect and filter URLs provided on stdin."
 authors = ["Harsh Verma <synacktra.work@gmail.com>"]
-readme = "README.md"
+readme = "readme.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"

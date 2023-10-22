@@ -5,10 +5,34 @@ Gone are the days of tedious manual operations; Urify is here to dissect, stream
 > Urify is heavily inspired by [tomnomnom/unfurl](https://github.com/tomnomnom/unfurl).
 ---
 
-### 🚀 Installation:
-```
-pip install urify
-```
+### 🚀 Installation
+
+This project can be installed on to your device via different mechanisms, these mechanisms are listed below in the order of ease.
+
+1.  PIP Installs Packages **aka** PIP Installation
+
+    ```sh
+    pip install urify
+    ```
+
+2.  Installation from source
+
+    First ensure [Poetry is installed](https://python-poetry.org/docs/#installation).
+
+    Then run the following command:
+
+    ```sh
+    git clone https://github.com/synacktraa/urify.git \
+    && cd urify \
+    && poetry build \
+    && pip install urify \
+    && cd ..
+    ```
+
+3. Installation using Docker
+    ```
+    docker pull urify
+    ```
 
 ---
 
@@ -51,7 +75,7 @@ Oh, you thought this was just a basic tool? Think again!
 $ urify -help
 Dissect and filter URLs provided on stdin.
 
-Usage: main.py [-help] [mode] ...
+Usage: urify [-help] [mode] ...
 
 Options:
   -help     show this help message
@@ -155,7 +179,7 @@ After evaluation, the default result is the URL.
 For specific URL dissected object, pair the `-dissect` option with any one of:
 `keys` | `values` | `params` | `apex` | `fqdn` | `json`
 
-Usage: main.py filter [-help] [-scheme SCHEME [...]] [-sub SUB [...]] [-domain DOMAIN [...]] [-tld TLD [...]] [-ext EXT [...]]     
+Usage: urify filter [-help] [-scheme SCHEME [...]] [-sub SUB [...]] [-domain DOMAIN [...]] [-tld TLD [...]] [-ext EXT [...]]     
                       [-port PORT [...]] [-apex APEX [...]] [-fqdn FQDN [...]] [-inverse] [-absolute] [-dissect MODE]
 
 Options:
