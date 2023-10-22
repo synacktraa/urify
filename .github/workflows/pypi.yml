@@ -1,6 +1,6 @@
 name: Publish version changes to PyPI
 on:
-  push:
+  release:
     branches:
       - "master"
     paths:
