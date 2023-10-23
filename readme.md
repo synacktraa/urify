@@ -179,7 +179,7 @@ Options:
   -apex APEX [...]      The apex domains (e.g. github.com, youtube.com)
   -fqdn FQDN [...]      The fully qualified domain names (e.g. api.github.com, app.example.com)
   -inverse              Process filters as deny-list
-  -strict             Validate all filter checks
+  -strict               Validate all filter checks
   -dissect MODE         Dissect url and retrieve mode after filtering
 
 Modes:
