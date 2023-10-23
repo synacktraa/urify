@@ -1,35 +1,19 @@
 # Urify 🫧
 
-Gone are the days of tedious manual operations; Urify is here to dissect, streamline, and nearly whip up a sandwich for you.
+Streamlining URLs for security testing - No more duplicates, just streamlined precision
 
-> Urify is heavily inspired by [tomnomnom/unfurl](https://github.com/tomnomnom/unfurl).
 ---
 
 ### 🚀 Installation
 
-This project can be installed on to your device via different mechanisms, these mechanisms are listed below in the order of ease.
-
-1.  PIP Installs Packages **aka** PIP Installation
+1.  Installation using PIP
 
     ```sh
     pip install urify
     ```
 
-2.  Installation from source
+2. Installation using Docker
 
-    First ensure [Poetry is installed](https://python-poetry.org/docs/#installation).
-
-    Then run the following command:
-
-    ```sh
-    git clone https://github.com/synacktraa/urify.git \
-    && cd urify \
-    && poetry build \
-    && pip install urify \
-    && cd ..
-    ```
-
-3. Installation using Docker
     ```
     docker pull urify
     ```
@@ -62,7 +46,7 @@ Oh, you thought this was just a basic tool? Think again!
   - `-apex`: Get URLs by apex domain. It's like VIP access.
   - `-fqdn`: Filter by fully qualified domain names. The whole shebang!
   - `-inverse`: Want to be rebellious? Use filters as a deny-list.
-  - `-absolute`: Validate all filters. No half measures here!
+  - `-strict`: Validate all filters. No half measures here!
   - `-dissect`: Once filtered, dissect the URL for a specific component. Pick and choose!
 
 ---
@@ -173,14 +157,16 @@ Refine URLs using component filters.
 By default, the command treats provided filters as an allow-list,
 evaluating just one parameter from a specified field.
 
-To assess all components, add the `-absolute` flag.
+To assess all components, add the `-strict` flag.
 For a deny-list approach, incorporate the `-inverse` flag.
 After evaluation, the default result is the URL.
 For specific URL dissected object, pair the `-dissect` option with any one of:
 `keys` | `values` | `params` | `apex` | `fqdn` | `json`
+If `-dissect` is not provided, `filter` command aims to print 
+dissimilar urls using pattern matching
 
 Usage: urify filter [-help] [-scheme SCHEME [...]] [-sub SUB [...]] [-domain DOMAIN [...]] [-tld TLD [...]] [-ext EXT [...]]     
-                      [-port PORT [...]] [-apex APEX [...]] [-fqdn FQDN [...]] [-inverse] [-absolute] [-dissect MODE]
+                      [-port PORT [...]] [-apex APEX [...]] [-fqdn FQDN [...]] [-inverse] [-strict] [-dissect MODE]
 
 Options:
   -help                 show this help message
@@ -193,12 +179,19 @@ Options:
   -apex APEX [...]      The apex domains (e.g. github.com, youtube.com)
   -fqdn FQDN [...]      The fully qualified domain names (e.g. api.github.com, app.example.com)
   -inverse              Process filters as deny-list
-  -absolute             Validate all filter checks
+  -strict             Validate all filter checks
   -dissect MODE         Dissect url and retrieve mode after filtering
 
 Modes:
   keys|values|params|path|apex|fqdn|json
 ```
+
+- **filter dissimilar urls**
+  ```
+  $ cat similar_urls.txt | urify filter
+  http://blog.example.net/post/12
+  http://info.example.net/tag/14?id=133
+  ```
 
 - **filter by scheme**:
   ```
@@ -220,7 +213,6 @@ Modes:
   spaghetti.com
   ```
 
-
 - **filters as deny-list**:
   ```
   $ cat urls.txt | urify filter -ext html -inverse
@@ -231,7 +223,7 @@ Modes:
 
 - **validate all filters**:
   ```
-  $ cat urls.txt | urify filter -tld com -port 8080 -absolute
+  $ cat urls.txt | urify filter -tld com -port 8080 -strict
   http://mom.spaghetti.com:8080/cookbook.pdf?search=query
   ```
 
@@ -240,7 +232,7 @@ Modes:
 ### 📝 Notes:
 
 - By default, the `filter` command treats the provided filters as an allow-list. But if you're feeling a little naughty, use the `-inverse` flag for a deny-list approach.
-- If you're the meticulous type and want to validate every single filter parameter, add the `-absolute` flag to your command. No stone unturned!
+- If you're the meticulous type and want to validate every single filter parameter, add the `-strict` flag to your command. No stone unturned!
 - After all the filtering shenanigans, if you just want the URL, we'll give it to you. But if you're in the mood for something special, pair the `-dissect` option with any one of the listed choices.
 
 ---
@@ -251,7 +243,6 @@ Ever felt that built-in command-line parsers are just... meh? I did too. That's 
 
 ### 🧐 Features:
 
-- **Read from Standard Input**: Yes, the good ol' stdin. And if you're feeling picky, verify if the input has been piped with `verify_tty`.
 - **Command-centric**: Create commands as easily as adding a decorator with `@cli.command(...)`. Seriously, it's like sprinkling magic dust on your functions.
 - **Options Galore**: Add options to your commands using the `@cli.option(...)` decorator. Define data types, set multiple values, and even specify valid choices. It's like an all-you-can-eat buffet, but for command-line arguments.
 
@@ -278,15 +269,9 @@ The heart and soul of the custom parser. The `Cli` class:
 
 The magic happens with the use of the `_ArgumentParser` class (a modified version of `argparse.ArgumentParser`). This allows for a more intuitive and concise definition of command-line interfaces. The beauty of this parser is that it draws inspiration from renowned libraries like `click` and `typer` while maintaining the unique aspects of `argparse`.
 
-The `read_stdin` function is a handy tool to read values directly from standard input. If you've ever been in a situation where you'd like to exit if no input has been piped, the `verify_tty` parameter has got your back.
-
 Overall, this custom CLI parser provides a seamless and powerful way to interact with command-line tools without the usual hassles.
 
 ---
-
-### ToDo
-
-- Integrate unique URL printing to filter similar urls.
 
 *Disclaimer: No URLs were harmed in the making of this tool.*
 

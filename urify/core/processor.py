@@ -53,7 +53,7 @@ def urldissect(url: Url, silent: bool=True) -> UrlObject | None:
         subdomain=extracted.subdomain,
         domain=extracted.domain,
         tld=extracted.suffix,
-        port=str(parsed.port) or '',
+        port=parsed.port or '',
         path=path,
         raw_query=query,
         query=querydissect(query),
@@ -64,18 +64,18 @@ def urldissect(url: Url, silent: bool=True) -> UrlObject | None:
 
 
 def urlfilter(
-    url: Url, filters: UrlFilters, absolute: bool=False, return_obj: bool=False
+    url: Url, filters: UrlFilters, strict: bool=False, return_obj: bool=False
 ) -> Optional[Url | UrlObject]:
     
     """
     An efficient and versatile method for filtering url based on provided `UrlFilters` instance.  
     
-    The strictness of these filters can be controlled by the `absolute` flag. If `absolute` is set to True,
+    The strictness of these filters can be controlled by the `strict` flag. If `strict` is set to True,
     all filter conditions must be met for the URL to pass; else, the URL can pass if any single condition is met.
     
     :param url: url to be filtered
     :param filters: filters for evaluation
-    :param absolute: if true, url is only returned if all filter checks are passed
+    :param strict: if true, url is only returned if all filter checks are passed
     :param return_obj: if true, returns dissected object
 
     :returns: Url, UrlObject or None after evaluation
@@ -84,7 +84,7 @@ def urlfilter(
 
     >>> # create filter that blocks 'php' filetype and 'example' domain, all must be verified
     >>> filters = UrlFilters(
-    ...     extensions={".php"}, domains={"example"}, as_denylist=True, absolute=True
+    ...     extensions={".php"}, domains={"example"}, as_denylist=True, strict=True
     ... )
     >>> urlfilter("https://www.example.com/index.html", filters=filters) 
     >>> "https://www.example.com/index.html"
@@ -106,7 +106,7 @@ def urlfilter(
         ('apexes', url_object.apex),
         ('fqdns', url_object.fqdn)
     )
-    # print(filters)
+
     filter_state = []
     for attr, component in filter_mappings:
         filter_set = getattr(filters, attr)
@@ -127,9 +127,9 @@ def urlfilter(
     if not filters.as_denylist:
         all_filters, any_filter = not all_filters, not any_filter
 
-    if absolute and all_filters:
+    if strict and all_filters:
         return None
-    elif not absolute and any_filter:
+    elif not strict and any_filter:
         return None    
 
     return url_object if return_obj else url

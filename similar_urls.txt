@@ -1,0 +1,4 @@
+http://blog.example.net/post/12
+http://blog.example.net/post/13
+http://info.example.net/tag/14?id=133
+http://info.example.net/tag/15?id=345

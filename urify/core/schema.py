@@ -1,8 +1,9 @@
-from pydantic import BaseModel, root_validator
-from typing import Optional, TypeAlias, Sequence
+from pydantic import BaseModel, root_validator, validator
+from typing import Optional, TypeAlias
 
 
 Url: TypeAlias = str
+Filter: TypeAlias = set[str] | tuple[str, ...] | list[str] | None
 
 class UrlError(Exception):
     """Custom Url Exception"""
@@ -41,7 +42,7 @@ class UrlObject(BaseModel):
     subdomain: str 
     domain: str 
     tld: str 
-    port: Optional[str]
+    port: Optional[str | int]
     path: str
     raw_query: str 
     query: list[QueryObject]
@@ -51,6 +52,13 @@ class UrlObject(BaseModel):
     
     class Config:
         arbitrary_types_allowed = True
+
+    @validator('port', pre=True)
+    @classmethod
+    def stringify_port(cls, port):
+        if isinstance(port, int):
+            port = str(port)
+        return port
 
     @property
     def keys(self):
@@ -71,9 +79,14 @@ class UrlObject(BaseModel):
         if not self.raw_query:
             return None        
         return self.raw_query.split('&')
+    
+    @property
+    def json(self):
+        return self.model_dump_json()
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({', '.join([f'{k}={v!r}' for k, v in self.__dict__.items()])})"
+
 
 
 class UrlFilters(BaseModel):
@@ -96,26 +109,29 @@ class UrlFilters(BaseModel):
     :param as_denylist: when set to true, filters are processed as a blacklist
     """
 
-    schemes: Optional[Sequence[str]] = None
-    subdomains: Optional[Sequence[str]] = None 
-    domains: Optional[Sequence[str]] = None
-    tlds: Optional[Sequence[str]] = None
-    ports: Optional[Sequence[str]] = None
-    extensions: Optional[Sequence[str]] = None
-    apexes: Optional[Sequence[str]] = None
-    fqdns: Optional[Sequence[str]] = None
-    as_denylist: bool = False 
+    schemes: Filter = None
+    subdomains: Filter = None
+    domains: Filter = None
+    tlds: Filter = None
+    ports: Filter = None
+    extensions: Filter = None
+    apexes: Filter = None
+    fqdns: Filter = None
+    as_denylist: bool = False
 
     @root_validator(pre=True)
-    def validate_fields(cls, values):
-        for v in values.values():
-            if type(v) is Sequence:
-                v = set(v)
-
-        exts = values.get('extensions')
-        if exts:
-            values['extensions'] = {
-                f".{ext.strip('.')}" for ext in exts
+    def validate_fields(cls, values: dict):
+        extensions = values.pop('extensions')
+        if extensions:
+            extensions = {
+                f".{ext.strip('.')}" for ext in extensions
             }
+        state = values.pop('as_denylist')
+        for v in values.values():
+            if v is None or isinstance(v, set):
+                continue
+            v = set(v)
 
-        return values
+        return {
+            **values, 'extensions': extensions, 'as_denylist': state
+        }

@@ -1,22 +1,7 @@
-import sys
 from pydantic import BaseModel
 from typing import Callable, Any, Type
 
 from .base import _ArgumentParser, OPTIONAL, ZERO_OR_MORE, ONE_OR_MORE
-
-
-def read_stdin(verify_tty: bool = False):
-    """
-    Read values from standard input (stdin). 
-    If `verify_tty` is True, exit if no input has been piped.
-    """
-    if verify_tty and sys.stdin.isatty():
-        return
-    try:
-        for line in sys.stdin:
-            yield line.strip()
-    except KeyboardInterrupt:
-        return
     
 
 class Command(BaseModel):
