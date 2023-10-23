@@ -15,7 +15,7 @@ Streamlining URLs for security testing - No more duplicates, just streamlined pr
 2. Installation using Docker
 
     ```
-    docker pull urify
+    docker pull synacktra/urify
     ```
 
 ---
